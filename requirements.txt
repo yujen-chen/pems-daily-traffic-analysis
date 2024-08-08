@@ -7,3 +7,4 @@ boto3
 plotly==5.23.0
 streamlit
 seaborn
+certifi

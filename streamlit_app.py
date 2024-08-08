@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
-import urllib3
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
+import certifi
 
 # load data
 
@@ -32,7 +29,7 @@ def load_data():
             aws_access_key_id=R2_ACCESS_KEY,
             aws_secret_access_key=R2_SECRET_KEY,
             region_name=R2_REGION,
-            verify=False,
+            verify=certifi.where(),
         )
         s3_client.download_file(
             Bucket="pems-data",
