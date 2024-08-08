@@ -47,6 +47,20 @@ import certifi
 uploaded_file = st.file_uploader("Upload a parquet file", type=["parquet"])
 
 
+def extract_dates_from_filename(filename):
+    """Extract start and end dates from the filename."""
+    # Assuming the filename format is "d12_station_MLHV_5min_20231001_20231010.parquet"
+    base_name = os.path.basename(filename)
+    date_part = base_name.split("_")[-1].replace(".parquet", "")
+    start_date_str, end_date_str = date_part.split("_")
+
+    # Convert to datetime.date objects
+    start_date = datetime.datetime.strptime(start_date_str, "%Y%m%d").date()
+    end_date = datetime.datetime.strptime(end_date_str, "%Y%m%d").date()
+
+    return start_date, end_date
+
+
 @st.cache_data
 def load_data(file):
     if file is not None:
@@ -90,6 +104,9 @@ def route_hourly_flow(df):
 
 if uploaded_file is not None:
 
+    # extract start and end dates
+    start_date, end_date = extract_dates_from_filename(uploaded_file.name)
+
     # load the file from uploaded file
     raw_df = load_data(uploaded_file)
 
@@ -107,7 +124,7 @@ if uploaded_file is not None:
 
         # select direction
         direction = st.sidebar.selectbox(
-            "Select Direction 1:",
+            "Select Direction:",
             (filtered_directions),
         )
         filtered_lane_type = raw_df[
@@ -116,7 +133,7 @@ if uploaded_file is not None:
 
         # select lane type
         lane_type = st.sidebar.selectbox(
-            "Select Lane Type 1:",
+            "Select Lane Type:",
             (filtered_lane_type),
         )
 
@@ -125,9 +142,9 @@ if uploaded_file is not None:
         # select date
         selected_date = st.sidebar.date_input(
             "Start Date",
-            value=pd.to_datetime("2023-10-01"),
-            min_value=pd.to_datetime("2023-10-01"),
-            max_value=pd.to_datetime("2023-10-31"),
+            value=start_date,
+            min_value=start_date,
+            max_value=end_date,
         )
 
         # route with selected date
