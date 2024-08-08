@@ -2,8 +2,6 @@ numpy
 pandas
 scipy
 matplotlib
-jupyter
-notebook
 scikit-learn
 boto3
 plotly==5.23.0
