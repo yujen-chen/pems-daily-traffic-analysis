@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # load data
