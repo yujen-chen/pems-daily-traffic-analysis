@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
-import certifi
+import re
+from datetime import datetime
 
 # load data from R2
 
@@ -51,12 +52,14 @@ def extract_dates_from_filename(filename):
     """Extract start and end dates from the filename."""
     # Assuming the filename format is "d12_station_MLHV_5min_20231001_20231010.parquet"
     base_name = os.path.basename(filename)
-    date_part = base_name.split("_")[-1].replace(".parquet", "")
-    start_date_str, end_date_str = date_part.split("_")
+    dates = re.findall(r"\d{8}", base_name)
 
-    # Convert to datetime.date objects
-    start_date = datetime.datetime.strptime(start_date_str, "%Y%m%d").date()
-    end_date = datetime.datetime.strptime(end_date_str, "%Y%m%d").date()
+    if len(dates) == 2:
+        # Convert to datetime.date objects
+        start_date = datetime.strptime(dates[0], "%Y%m%d").date()
+        end_date = datetime.strptime(dates[1], "%Y%m%d").date()
+    else:
+        raise ValueError("Filename does not contain two valid date strings.")
 
     return start_date, end_date
 
